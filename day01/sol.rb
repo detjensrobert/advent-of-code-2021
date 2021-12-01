@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 
+input = ARGF.readlines.map(&:to_i)
+
 # PART 1: count the number of times a depth measurement increases
 
-input = ARGF.readlines.map(&:to_i)
+# increased starts at -1 since the first increase shouldnt count
+# (no prev measurement to compare to, but this starts at 0 so off by one)
 
 increased = -1
 prev = 0
