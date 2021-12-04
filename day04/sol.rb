@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 input = ARGF.read.split("\n\n").map(&:strip)
 
@@ -9,26 +10,20 @@ require 'matrix'
 numbers = input.shift.split(',').map(&:to_i)
 
 boards = input.map do |b|
-  Matrix.rows b.split("\n").map { |r| r.split.map(&:to_i) }
+  Matrix.rows(b.split("\n").map { |r| r.split.map(&:to_i) })
 end
 
-# called numbers are negative
+# called numbers are negative, so if all numbers in row or col are negative
+# that board has won
 def board_won?(board)
-  [
-    board.row_vectors.map { |r| r.all? { |v| v.negative? } }, # rows
-    board.column_vectors.map { |c| c.all? { |v| v.negative? } } # cols
-    # board.map(:diagonal) { |v| v.negative? },                             # NW diagonal
-    # Matrix.rows(m.to_a.map(&:reverse)).map(:diagonal) { |v| v.negative? } # SW diagonal
-  ].flatten.any?
+  (board.row_vectors + board.column_vectors).map { |r| r.all?(&:negative?) }.any?
 end
-
-# puts boards.inspect
 
 def game(numbers, boards)
   numbers.each do |call|
     boards.each do |b|
       i, j = b.find_index(call)
-      b[i, j] *= -1 if i          # negate if found
+      b[i, j] *= -1 if i  # negate if called
 
       return b, call if board_won?(b)
     end
@@ -39,18 +34,15 @@ def score(board, call)
   board.to_a.flatten.keep_if(&:positive?).sum * call
 end
 
-win_board, win_call = game(numbers, boards)
-
-puts "Board score: #{score(win_board, win_call)}"
+puts "Winning board score: #{score(*game(numbers, boards))}"
 
 # PART 2: What is the score of the last board to win?
 
-
-def game(numbers, boards)
+def last_game(numbers, boards)
   numbers.each do |call|
     boards.each do |b|
       i, j = b.find_index(call)
-      b[i, j] *= -1 if i          # negate if found
+      b[i, j] *= -1 if i  # negate when called
 
       boards.delete b if board_won?(b)
       return b, call if boards.size == 1
@@ -58,5 +50,4 @@ def game(numbers, boards)
   end
 end
 
-win_board, win_call = game(numbers, boards)
-puts "Last winning board score: #{score(win_board, win_call)}"
+puts "Last winning board score: #{score(*last_game(numbers, boards))}"
