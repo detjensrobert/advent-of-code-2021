@@ -24,7 +24,7 @@ end
 
 puts "pos * depth = #{depth * h_pos}"
 
-# PART 2: track a third value, aim that changes based on depth
+# PART 2: Instead of explicit depth changes, up/down change the aiming.
 
 depth = 0
 h_pos = 0
