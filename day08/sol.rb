@@ -71,8 +71,8 @@ output_values = input.map do |line, output|
   # segment in 8 and not in 7 or in 4 or bot left is bottom
   mapping.bot = (eight - four - seven - [mapping.bl])[0]
 
-  # the 5-seg that has both bottom and bot left is 2
-  two = line.find { |n| n.length == 5 && n.index(mapping.bl) && n.index(mapping.bot) }.chars
+  # the 5-seg that has bot left is 2
+  two = line.find { |n| n.length == 5 && n.index(mapping.bl) }.chars
 
   # segment in 9 but not in 2 or one is top left
   mapping.tl = (nine - two - one)[0]
